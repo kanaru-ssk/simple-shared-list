@@ -1,3 +1,5 @@
-export default function Page() {
-  return <div>home</div>;
+import { View } from "./view";
+
+export default async function Page() {
+  return <View />;
 }
