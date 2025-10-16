@@ -1,24 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ListTable } from "./list-table";
-import { LoginButton } from "./login-button";
+import { useCallback, useEffect, useState } from "react";
+import { SheetAddDialog } from "@/components/sheet-add-dialog";
+import { SheetTable } from "@/components/sheet-table";
+import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
+import { type Sheet, sheetsSchema } from "@/type/sheet";
 
 export function View() {
-  const [accessToken, setAccessToken] = useState<string>();
+  const [sheets, setSheets] = useState<Sheet[]>([]);
 
-  function loginCompletedHandler(accessToken: string) {
-    localStorage.setItem("accessToken", accessToken);
-    setAccessToken(accessToken);
+  const loadSheets = useCallback(() => {
+    const row = localStorage.getItem(LOCALSTORAGE_KEY.SHEETS);
+    if (!row) return;
+    console.log("row", row);
+
+    const result = sheetsSchema.safeParse(JSON.parse(row));
+    if (!result.success) throw new Error(result.error.message);
+
+    setSheets(result.data);
+  }, []);
+
+  function addSheet(value: Sheet) {
+    const newValue = [...sheets, value];
+    setSheets(newValue);
+    localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
+  }
+
+  function deleteSheet(spreadsheetId: string, sheetName: string) {
+    const newValue = sheets.filter(
+      (sheet) =>
+        !(
+          sheet.spreadsheetId === spreadsheetId && sheet.sheetName === sheetName
+        ),
+    );
+    setSheets(newValue);
+    localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) setAccessToken(token);
-  }, []);
+    loadSheets();
+  }, [loadSheets]);
 
-  // 未認証の場合はログインボタン表示
-  if (!accessToken) return <LoginButton onCompleted={loginCompletedHandler} />;
-
-  return <ListTable accessToken={accessToken} />;
+  return (
+    <div>
+      <SheetTable sheets={sheets} deleteSheet={deleteSheet} />
+      <SheetAddDialog addSheet={addSheet} />
+    </div>
+  );
 }

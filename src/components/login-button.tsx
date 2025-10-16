@@ -2,15 +2,39 @@
 "use client";
 
 import Script from "next/script";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import { env } from "@/env";
+
+const authSchema = z.object({
+  access_token: z.string(),
+});
+
+type Auth = z.infer<typeof authSchema>;
+
+type TokenClient = {
+  requestAccessToken: () => void;
+};
 
 declare global {
   interface Window {
-    google: any;
+    google: {
+      accounts: {
+        oauth2: {
+          initTokenClient: (arg: {
+            client_id: string;
+            scope: string;
+            callback: (arg: Auth) => void;
+            use_fedcm_for_prompt: boolean;
+            use_fedcm_for_button: boolean;
+          }) => TokenClient;
+        };
+      };
+    };
   }
 }
 
-let tokenClient: any;
+let tokenClient: TokenClient;
 
 type LoginButtonProps = {
   onCompleted: (accessToken: string) => void;
@@ -22,13 +46,14 @@ export function LoginButton({ onCompleted }: LoginButtonProps) {
     tokenClient = window.google.accounts.oauth2.initTokenClient({
       client_id: env.NEXT_PUBLIC_GSI_CLIENT_ID,
       scope: "https://www.googleapis.com/auth/spreadsheets",
-      callback: (res: any) => {
+      callback: (res) => {
         console.log(res);
         onCompleted(res.access_token);
       },
       use_fedcm_for_prompt: false,
       use_fedcm_for_button: false,
     });
+    console.log(tokenClient);
   }
 
   return (
@@ -38,15 +63,13 @@ export function LoginButton({ onCompleted }: LoginButtonProps) {
         async
         onLoad={gsiInitialize}
       />
-      <button
-        type="button"
-        id="authorize_button"
+      <Button
         onClick={() => {
-          tokenClient.requestAccessToken({ prompt: "consent" });
+          tokenClient.requestAccessToken();
         }}
       >
-        Authorize
-      </button>
+        Authorize with Google
+      </Button>
     </>
   );
 }

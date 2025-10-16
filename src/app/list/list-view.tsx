@@ -1,30 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
-import { env } from "@/env";
-import { appendValue } from "@/lib/append-value";
-import { getSheets } from "@/lib/get-sheets";
-import { getValues } from "@/lib/get-values";
+import { appendValue } from "@/lib/spreadsheet/append-value";
+import { getSheets } from "@/lib/spreadsheet/get-sheets";
+import { getValues } from "@/lib/spreadsheet/get-values";
 
-type ListTableProps = {
+type ListViewProps = {
   accessToken: string;
+  spreadsheetId: string;
 };
 
-export function ListTable({ accessToken }: ListTableProps) {
+export function ListView({ accessToken, spreadsheetId }: ListViewProps) {
   const [list, setList] = useState<string[][]>();
+
   const getSheetValues = useCallback(async () => {
-    const sheets = await getSheets(env.NEXT_PUBLIC_SHEET_ID, accessToken);
+    const getSheetsResult = await getSheets(spreadsheetId, accessToken);
+    if (!getSheetsResult.ok) return [];
     await appendValue(
       [["test_a5", "test_b5"]],
       accessToken,
-      env.NEXT_PUBLIC_SHEET_ID,
-      sheets[0],
+      spreadsheetId,
+      getSheetsResult.data[0],
     );
     const values = await getValues(
-      env.NEXT_PUBLIC_SHEET_ID,
-      sheets[0],
+      spreadsheetId,
+      getSheetsResult.data[0],
       accessToken,
     );
     setList(values);
-  }, [accessToken]);
+  }, [accessToken, spreadsheetId]);
 
   useEffect(() => {
     getSheetValues();

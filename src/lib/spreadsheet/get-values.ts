@@ -5,7 +5,7 @@ export async function getValues(
   sheetTitle: string,
   accessToken: string,
 ): Promise<string[][]> {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetTitle}!A:B?key=${"AIzaSyAK4uwSiKR6mTf1ZPHOZvgs86hbrQ4A0rI"}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetTitle}!A:B`;
   const method: HTTP_METHOD = "GET";
   const headers = { Authorization: `Bearer ${accessToken}` };
   const res = await fetch(url, { method, headers });
