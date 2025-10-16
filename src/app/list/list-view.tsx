@@ -2,31 +2,32 @@ import { useCallback, useEffect, useState } from "react";
 import { appendValue } from "@/lib/spreadsheet/append-value";
 import { getSheets } from "@/lib/spreadsheet/get-sheets";
 import { getValues } from "@/lib/spreadsheet/get-values";
+import type { Sheet } from "@/type/sheet";
 
 type ListViewProps = {
   accessToken: string;
-  spreadsheetId: string;
+  sheet: Sheet;
 };
 
-export function ListView({ accessToken, spreadsheetId }: ListViewProps) {
+export function ListView({ accessToken, sheet }: ListViewProps) {
   const [list, setList] = useState<string[][]>();
 
   const getSheetValues = useCallback(async () => {
-    const getSheetsResult = await getSheets(spreadsheetId, accessToken);
+    const getSheetsResult = await getSheets(sheet.spreadsheetId, accessToken);
     if (!getSheetsResult.ok) return [];
     await appendValue(
       [["test_a5", "test_b5"]],
       accessToken,
-      spreadsheetId,
-      getSheetsResult.data[0],
+      sheet.spreadsheetId,
+      sheet.sheetName,
     );
     const values = await getValues(
-      spreadsheetId,
-      getSheetsResult.data[0],
       accessToken,
+      sheet.spreadsheetId,
+      sheet.sheetName,
     );
     setList(values);
-  }, [accessToken, spreadsheetId]);
+  }, [accessToken, sheet]);
 
   useEffect(() => {
     getSheetValues();

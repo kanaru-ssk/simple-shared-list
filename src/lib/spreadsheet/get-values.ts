@@ -1,9 +1,9 @@
 import type { HTTP_METHOD } from "next/dist/server/web/http";
 
 export async function getValues(
+  accessToken: string,
   spreadsheetId: string,
   sheetTitle: string,
-  accessToken: string,
 ): Promise<string[][]> {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetTitle}!A:B`;
   const method: HTTP_METHOD = "GET";

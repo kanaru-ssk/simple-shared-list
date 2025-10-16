@@ -57,11 +57,11 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add New Spreadsheet</Button>
+        <Button>Add New Sheet</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Spreadsheet</DialogTitle>
+          <DialogTitle>Add New Sheet</DialogTitle>
           <DialogDescription>
             This action cannot be undone. This will permanently delete your
             account and remove your data from our servers.
@@ -78,7 +78,6 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
                   <FormControl>
                     <Input placeholder="ToDo List" {...field} />
                   </FormControl>
-                  <FormDescription>List name</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
