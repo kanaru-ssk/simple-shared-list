@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { ListTable } from "@/components/list-table";
 import { HTTP_STATUS } from "@/constants/http-status";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { getValues } from "@/lib/spreadsheet/get-values";
@@ -63,17 +64,7 @@ export function ListView({
 
   return (
     <div>
-      {list.map((row, i) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: reactで操作しないのでignore
-        <div key={i}>
-          {row.map((cell, j) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: reactで操作しないのでignore
-            <span key={`${i}-${j}`} className="px-4">
-              {cell}
-            </span>
-          ))}
-        </div>
-      ))}
+      <ListTable list={list} />
     </div>
   );
 }
