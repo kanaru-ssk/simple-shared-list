@@ -7,12 +7,13 @@ import { env } from "@/env";
 
 const authSchema = z.object({
   access_token: z.string(),
+  expires_in: z.number(),
 });
 
 type Auth = z.infer<typeof authSchema>;
 
 type TokenClient = {
-  requestAccessToken: () => void;
+  requestAccessToken: (arg: { prompt?: string }) => void;
 };
 
 declare global {
@@ -48,7 +49,6 @@ export function LoginButton({ onCompleted }: LoginButtonProps) {
       use_fedcm_for_prompt: false,
       use_fedcm_for_button: false,
     });
-    console.log(tokenClient);
   }
 
   return (
@@ -58,7 +58,7 @@ export function LoginButton({ onCompleted }: LoginButtonProps) {
         async
         onLoad={gsiInitialize}
       />
-      <Button onClick={() => tokenClient.requestAccessToken()}>
+      <Button onClick={() => tokenClient.requestAccessToken({ prompt: "" })}>
         Authorize with Google
       </Button>
     </>
