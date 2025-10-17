@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { SheetAddDialog } from "@/components/sheet-add-dialog";
-import { SheetTable } from "@/components/sheet-table";
+import { SheetList } from "@/components/sheet-list";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { type Sheet, sheetsSchema } from "@/type/sheet";
 
@@ -19,8 +19,9 @@ export function View() {
     setSheets(result.data);
   }, []);
 
-  function addSheet(value: Sheet) {
-    const newValue = [...sheets, value];
+  function addSheet(value: Omit<Sheet, "id">) {
+    const id = crypto.randomUUID();
+    const newValue = [...sheets, { id, ...value }];
     setSheets(newValue);
     localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
   }
@@ -41,9 +42,11 @@ export function View() {
   }, [loadSheets]);
 
   return (
-    <div>
-      <SheetTable sheets={sheets} deleteSheet={deleteSheet} />
-      <SheetAddDialog addSheet={addSheet} />
-    </div>
+    <main>
+      <div className="flex flex-row-reverse mb-2">
+        <SheetAddDialog addSheet={addSheet} />
+      </div>
+      <SheetList sheets={sheets} />
+    </main>
   );
 }

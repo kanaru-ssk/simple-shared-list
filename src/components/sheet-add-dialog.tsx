@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -30,7 +31,7 @@ const formSchema = z.object({
 });
 
 type SheetAddDialogProps = {
-  addSheet: (value: Sheet) => void;
+  addSheet: (value: Omit<Sheet, "id">) => void;
 };
 
 export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
@@ -57,7 +58,10 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add New Sheet</Button>
+        <Button size="sm">
+          <PlusIcon />
+          Add New Sheet
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
