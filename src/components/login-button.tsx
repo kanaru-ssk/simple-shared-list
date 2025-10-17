@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: 公式でgsiの型が提供されていないため一旦として扱う */
 "use client";
 
 import Script from "next/script";
@@ -42,14 +41,10 @@ type LoginButtonProps = {
 
 export function LoginButton({ onCompleted }: LoginButtonProps) {
   function gsiInitialize() {
-    console.log("gsiInitialize");
     tokenClient = window.google.accounts.oauth2.initTokenClient({
       client_id: env.NEXT_PUBLIC_GSI_CLIENT_ID,
       scope: "https://www.googleapis.com/auth/spreadsheets",
-      callback: (res) => {
-        console.log(res);
-        onCompleted(res.access_token);
-      },
+      callback: (res) => onCompleted(res.access_token),
       use_fedcm_for_prompt: false,
       use_fedcm_for_button: false,
     });
@@ -63,11 +58,7 @@ export function LoginButton({ onCompleted }: LoginButtonProps) {
         async
         onLoad={gsiInitialize}
       />
-      <Button
-        onClick={() => {
-          tokenClient.requestAccessToken();
-        }}
-      >
+      <Button onClick={() => tokenClient.requestAccessToken()}>
         Authorize with Google
       </Button>
     </>

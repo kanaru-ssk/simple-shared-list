@@ -2,6 +2,7 @@ import type { HTTP_METHOD } from "next/dist/server/web/http";
 import { z } from "zod";
 import { HTTP_STATUS } from "@/constants/http-status";
 import type { Result } from "@/type/result";
+import { errorSchema } from "./error-schema";
 
 // 必要なプロパティのみバリデーション
 const spreadsheetSchema = z.object({
@@ -12,14 +13,6 @@ const spreadsheetSchema = z.object({
       }),
     }),
   ),
-});
-
-const errorSchema = z.object({
-  error: z.object({
-    code: z.number(),
-    message: z.string(),
-    status: z.string(),
-  }),
 });
 
 export async function getSheets(

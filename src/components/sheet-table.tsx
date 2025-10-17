@@ -1,4 +1,9 @@
-import { DeleteIcon, Edit2Icon, ExternalLinkIcon } from "lucide-react";
+import {
+  ChevronRight,
+  DeleteIcon,
+  Edit2Icon,
+  ExternalLinkIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -24,6 +29,7 @@ export function SheetTable({ sheets, deleteSheet }: SheetTableProps) {
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Spreadsheet ID</TableHead>
+          <TableHead>Sheet Name</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -31,8 +37,11 @@ export function SheetTable({ sheets, deleteSheet }: SheetTableProps) {
           <TableRow key={`${sheet.spreadsheetId}-${sheet.sheetName}`}>
             <TableCell>
               <Button variant="link" asChild>
-                <Link href={`/list?spreadsheetId=${sheet.spreadsheetId}`}>
+                <Link
+                  href={`/list?spreadsheetId=${sheet.spreadsheetId}&sheetName=${sheet.sheetName}`}
+                >
                   {sheet.name}
+                  <ChevronRight />
                 </Link>
               </Button>
             </TableCell>
@@ -49,7 +58,8 @@ export function SheetTable({ sheets, deleteSheet }: SheetTableProps) {
                 </a>
               </Button>
             </TableCell>
-            <TableCell>
+            <TableCell>{sheet.sheetName}</TableCell>
+            <TableCell className="space-x-2">
               <Button
                 variant="destructive"
                 size="icon"

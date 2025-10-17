@@ -19,7 +19,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable}`}>{children}</body>
+      <body className={`${inter.variable} max-w-3xl mx-auto p-5`}>
+        {children}
+      </body>
     </html>
   );
 }

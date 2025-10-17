@@ -12,7 +12,6 @@ export function View() {
   const loadSheets = useCallback(() => {
     const row = localStorage.getItem(LOCALSTORAGE_KEY.SHEETS);
     if (!row) return;
-    console.log("row", row);
 
     const result = sheetsSchema.safeParse(JSON.parse(row));
     if (!result.success) throw new Error(result.error.message);
