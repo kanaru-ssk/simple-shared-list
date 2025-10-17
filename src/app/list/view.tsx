@@ -1,31 +1,16 @@
 "use client";
 
-import { notFound, useSearchParams } from "next/navigation";
-import { Spinner } from "@/components/ui/spinner";
-import { useAuth } from "../auth-provider";
-import { ListView } from "./list-view";
+import { ListTable } from "@/components/list-table";
+import { useList } from "./use-list";
 
 export function View() {
-  const auth = useAuth();
-  const searchParams = useSearchParams();
-  const spreadsheetId = searchParams.get("spreadsheetId");
-  const sheetName = searchParams.get("sheetName");
+  const { list } = useList();
 
-  if (!spreadsheetId || !sheetName) return notFound();
-
-  if (!auth) {
-    return (
-      <div>
-        <Spinner className="size-6 text-neutral-500" />
-      </div>
-    );
-  }
+  if (!list) return;
 
   return (
-    <ListView
-      accessToken={auth.accessToken}
-      spreadsheetId={spreadsheetId}
-      sheetName={sheetName}
-    />
+    <div>
+      <ListTable list={list} />
+    </div>
   );
 }

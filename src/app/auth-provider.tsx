@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Script from "next/script";
 import {
   createContext,
@@ -12,7 +11,6 @@ import {
   useState,
 } from "react";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { env } from "@/env";
 
@@ -23,7 +21,16 @@ export const authSchema = z.object({
 
 export type Auth = z.infer<typeof authSchema>;
 
-const AuthContext = createContext<Auth | null>(null);
+type AuthState = {
+  auth: Auth | null;
+  login: () => void;
+  logout: () => void;
+};
+const AuthContext = createContext<AuthState>({
+  auth: null,
+  login: () => null,
+  logout: () => null,
+});
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -84,22 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={auth}>
-      <header className="px-5 h-16 flex justify-between items-center">
-        <Link href="/" className="font-bold">
-          Simple Shared List
-        </Link>
-        {auth ? (
-          <Button onClick={logout} variant="outline" size="sm">
-            Logout
-          </Button>
-        ) : (
-          <Button onClick={login} size="sm">
-            Login with Google
-          </Button>
-        )}
-      </header>
-
+    <AuthContext.Provider value={{ auth, login, logout }}>
       {children}
       <Script
         src="https://accounts.google.com/gsi/client"

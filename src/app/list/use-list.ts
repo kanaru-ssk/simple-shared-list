@@ -1,21 +1,16 @@
-import { notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { ListTable } from "@/components/list-table";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { getValues } from "@/lib/spreadsheet/get-values";
 import { type Sheet, sheetsSchema } from "@/type/sheet";
+import { useAuth } from "../auth-provider";
 
-type ListViewProps = {
-  accessToken: string;
-  spreadsheetId: string;
-  sheetName: string;
-};
+export function useList() {
+  const { auth } = useAuth();
+  const searchParams = useSearchParams();
+  const spreadsheetId = searchParams.get("spreadsheetId");
+  const sheetName = searchParams.get("sheetName");
 
-export function ListView({
-  accessToken,
-  spreadsheetId,
-  sheetName,
-}: ListViewProps) {
   const [list, setList] = useState<string[][]>();
   const [sheet, setSheet] = useState<Sheet>();
 
@@ -33,11 +28,11 @@ export function ListView({
     );
   }, [spreadsheetId, sheetName]);
 
-  const getSheetValues = useCallback(async () => {
-    if (!sheet) return;
+  const getList = useCallback(async () => {
+    if (!sheet || !auth) return;
 
     const result = await getValues(
-      accessToken,
+      auth.accessToken,
       sheet.spreadsheetId,
       sheet.sheetName,
     );
@@ -46,21 +41,15 @@ export function ListView({
     }
 
     setList(result.data);
-  }, [accessToken, sheet]);
+  }, [auth, sheet]);
 
   useEffect(() => {
     loadSheet();
   }, [loadSheet]);
 
   useEffect(() => {
-    getSheetValues();
-  }, [getSheetValues]);
+    getList();
+  }, [getList]);
 
-  if (!list) return null;
-
-  return (
-    <div>
-      <ListTable list={list} />
-    </div>
-  );
+  return { list };
 }
