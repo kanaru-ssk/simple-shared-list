@@ -1,3 +1,4 @@
+import { TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,25 +11,33 @@ import {
 } from "@/components/ui/dialog";
 
 type SheetDeleteDialogProps = {
-  deleteSheet: (id: string) => void;
+  onClick: () => void;
 };
 
-export function SheetDeleteDialog({ deleteSheet }: SheetDeleteDialogProps) {
+export function SheetDeleteDialog({ onClick }: SheetDeleteDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">Delete</Button>
+        <Button variant="destructive" size="sm">
+          <TrashIcon />
+          Delete
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Sheet</DialogTitle>
+          <DialogTitle>Delete?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            The spreadsheet itself will not be deleted.
           </DialogDescription>
         </DialogHeader>
+        <div className="text-right">
+          <Button variant="destructive" size="sm" onClick={onClick}>
+            <TrashIcon />
+            Delete
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

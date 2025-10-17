@@ -19,20 +19,21 @@ export function View() {
     setSheets(result.data);
   }, []);
 
-  function addSheet(value: Omit<Sheet, "id">) {
+  function addSheet(sheet: Omit<Sheet, "id">) {
     const id = crypto.randomUUID();
-    const newValue = [...sheets, { id, ...value }];
+    const newValue = [...sheets, { id, ...sheet }];
     setSheets(newValue);
     localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
   }
 
-  function deleteSheet(spreadsheetId: string, sheetName: string) {
-    const newValue = sheets.filter(
-      (sheet) =>
-        !(
-          sheet.spreadsheetId === spreadsheetId && sheet.sheetName === sheetName
-        ),
-    );
+  function editSheet(sheet: Sheet) {
+    const newValue = [...sheets.map((v) => (v.id === sheet.id ? sheet : v))];
+    setSheets(newValue);
+    localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
+  }
+
+  function deleteSheet(id: string) {
+    const newValue = sheets.filter((v) => v.id !== id);
     setSheets(newValue);
     localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
   }
@@ -46,7 +47,11 @@ export function View() {
       <div className="flex flex-row-reverse mb-2">
         <SheetAddDialog addSheet={addSheet} />
       </div>
-      <SheetList sheets={sheets} />
+      <SheetList
+        sheets={sheets}
+        editSheet={editSheet}
+        deleteSheet={deleteSheet}
+      />
     </main>
   );
 }

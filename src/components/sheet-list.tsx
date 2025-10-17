@@ -16,12 +16,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { Sheet } from "@/type/sheet";
+import { SheetDeleteDialog } from "./sheet-delete-dialog";
+import { SheetEditDialog } from "./sheet-edit-dialog";
 
 type SheetListProps = {
   sheets: Sheet[];
+  editSheet: (sheet: Sheet) => void;
+  deleteSheet: (id: string) => void;
 };
 
-export function SheetList({ sheets }: SheetListProps) {
+export function SheetList({ sheets, editSheet, deleteSheet }: SheetListProps) {
   return (
     <ItemGroup>
       {sheets.length === 0 && (
@@ -45,7 +49,11 @@ export function SheetList({ sheets }: SheetListProps) {
             </ItemContent>
 
             <ItemActions>
-              <PopoverMenu />
+              <PopoverMenu
+                sheet={sheet}
+                editSheet={editSheet}
+                deleteSheet={deleteSheet}
+              />
             </ItemActions>
           </Item>
         </Fragment>
@@ -54,7 +62,13 @@ export function SheetList({ sheets }: SheetListProps) {
   );
 }
 
-function PopoverMenu() {
+type PopoverMenuProps = {
+  sheet: Sheet;
+  editSheet: (sheet: Sheet) => void;
+  deleteSheet: (id: string) => void;
+};
+
+function PopoverMenu({ sheet, editSheet, deleteSheet }: PopoverMenuProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -63,12 +77,8 @@ function PopoverMenu() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex flex-col gap-2 max-w-48">
-        <Button variant="outline" size="sm" className="w-full">
-          Edit
-        </Button>
-        <Button variant="destructive" size="sm" className="w-full">
-          Delete
-        </Button>
+        <SheetEditDialog sheet={sheet} editSheet={editSheet} />
+        <SheetDeleteDialog onClick={() => deleteSheet(sheet.id)} />
       </PopoverContent>
     </Popover>
   );

@@ -1,0 +1,134 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Edit2Icon } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import type { Sheet } from "@/type/sheet";
+
+const formSchema = z.object({
+  name: z.string().min(1, "required"),
+  spreadsheetId: z.string().min(1, "required"),
+  sheetName: z.string().min(1, "required"),
+});
+
+type SheetEditDialogProps = {
+  sheet: Sheet;
+  editSheet: (sheet: Sheet) => void;
+};
+
+export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
+  const [open, setOpen] = useState(false);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: sheet.name,
+      spreadsheetId: sheet.spreadsheetId,
+      sheetName: sheet.sheetName,
+    },
+  });
+
+  function onSubmit({
+    name,
+    spreadsheetId,
+    sheetName,
+  }: z.infer<typeof formSchema>) {
+    editSheet({ id: sheet.id, name, spreadsheetId, sheetName });
+    form.reset({ name, spreadsheetId, sheetName });
+    setOpen(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          <Edit2Icon />
+          Edit
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit sheet</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ToDo List" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="spreadsheetId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Spreadsheet ID</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    https://docs.google.com/spreadsheets/d/
+                    <span className="text-neutral-800 font-bold">
+                      [Spreadsheet ID]
+                    </span>
+                    /edit?gid=0#gid=0
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sheetName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sheet Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Sheet1" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="text-right">
+              <Button
+                type="submit"
+                disabled={!form.formState.isDirty}
+                variant="outline"
+                size="sm"
+              >
+                <Edit2Icon />
+                Edit
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
