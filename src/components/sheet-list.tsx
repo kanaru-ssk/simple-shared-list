@@ -1,6 +1,7 @@
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, ExternalLinkIcon, LinkIcon } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -69,6 +70,11 @@ type PopoverMenuProps = {
 };
 
 function PopoverMenu({ sheet, editSheet, deleteSheet }: PopoverMenuProps) {
+  async function copySharedLink() {
+    await navigator.clipboard.writeText("TODO: 共有リンクをコピー");
+    toast.success("Link copied", { position: "top-center" });
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -77,6 +83,20 @@ function PopoverMenu({ sheet, editSheet, deleteSheet }: PopoverMenuProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex flex-col gap-2 max-w-48">
+        <Button variant="outline" onClick={copySharedLink}>
+          <LinkIcon />
+          Share
+        </Button>
+        <Button variant="outline" asChild>
+          <a
+            href={`https://docs.google.com/spreadsheets/d/${sheet.spreadsheetId}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <ExternalLinkIcon />
+            Spreadsheet
+          </a>
+        </Button>
         <SheetEditDialog sheet={sheet} editSheet={editSheet} />
         <SheetDeleteDialog onClick={() => deleteSheet(sheet.id)} />
       </PopoverContent>

@@ -119,7 +119,12 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
                 </FormItem>
               )}
             />
-            <Button type="submit">Add</Button>
+            <div className="text-right">
+              <Button type="submit">
+                <PlusIcon />
+                Add
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
