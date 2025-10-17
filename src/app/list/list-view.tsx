@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ListTable } from "@/components/list-table";
-import { HTTP_STATUS } from "@/constants/http-status";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { getValues } from "@/lib/spreadsheet/get-values";
 import { type Sheet, sheetsSchema } from "@/type/sheet";
@@ -10,14 +9,12 @@ type ListViewProps = {
   accessToken: string;
   spreadsheetId: string;
   sheetName: string;
-  logout: () => void;
 };
 
 export function ListView({
   accessToken,
   spreadsheetId,
   sheetName,
-  logout,
 }: ListViewProps) {
   const [list, setList] = useState<string[][]>();
   const [sheet, setSheet] = useState<Sheet>();
@@ -45,12 +42,11 @@ export function ListView({
       sheet.sheetName,
     );
     if (!result.ok) {
-      if (result.status === HTTP_STATUS.UNAUTHORIZED) return logout();
       return notFound();
     }
 
     setList(result.data);
-  }, [accessToken, sheet, logout]);
+  }, [accessToken, sheet]);
 
   useEffect(() => {
     loadSheet();
