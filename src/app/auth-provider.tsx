@@ -56,11 +56,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!tokenClientRef.current) return;
 
     // 失効の60秒前にトークン再取得
-    const expiresAt = expires_in * 1_000;
     timerRef.current = setTimeout(
       () => tokenClientRef.current?.requestAccessToken({ prompt: "" }),
-      expiresAt - 60_000,
+      expires_in * 1_000 - 60_000,
     );
+
+    const expiresAt = Date.now() + expires_in * 1000;
     const newAuth = { accessToken: access_token, expiresAt };
     setAuth(newAuth);
     localStorage.setItem(LOCALSTORAGE_KEY.AUTH, JSON.stringify(newAuth));
@@ -72,6 +73,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const result = authSchema.safeParse(JSON.parse(row));
     if (!result.success) return localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
+
+    // 期限切れの場合はトークン再取得
+    if (result.data.expiresAt < Date.now()) {
+      return localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
+    }
 
     setAuth(result.data);
   }, []);
