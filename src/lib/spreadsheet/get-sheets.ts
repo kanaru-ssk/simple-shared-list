@@ -1,3 +1,5 @@
+// see: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/get
+
 import type { HTTP_METHOD } from "next/dist/server/web/http";
 import { z } from "zod";
 import { HTTP_STATUS } from "@/constants/http-status";

@@ -1,5 +1,7 @@
 "use client";
 
+// see: https://developers.google.com/identity/oauth2/web/reference/js-reference
+
 import Script from "next/script";
 import {
   createContext,
