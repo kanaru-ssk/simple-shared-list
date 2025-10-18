@@ -30,12 +30,12 @@ const formSchema = z.object({
 
 type CheckListItemEditDialogProps = {
   item: CheckListItem;
-  editItem: (item: CheckListItem) => void;
+  updateItem: (item: CheckListItem) => void;
 };
 
 export function CheckListItemEditDialog({
   item,
-  editItem,
+  updateItem,
 }: CheckListItemEditDialogProps) {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,7 +48,7 @@ export function CheckListItemEditDialog({
 
   function onSubmit({ name, checked }: z.infer<typeof formSchema>) {
     const now = new Date().toISOString();
-    editItem({
+    updateItem({
       id: item.id,
       createdAt: item.createdAt,
       updatedAt: now,

@@ -38,7 +38,14 @@ export function DeleteDialog({ description, onClick }: DeleteDialogProps) {
               cancel
             </Button>
           </DialogClose>
-          <Button variant="destructive" size="sm" onClick={onClick}>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => {
+              onClick();
+              setOpen(false);
+            }}
+          >
             <TrashIcon />
             Delete
           </Button>

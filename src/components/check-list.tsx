@@ -21,37 +21,33 @@ import { Checkbox } from "./ui/checkbox";
 
 type CheckListProps = {
   items: TCheckListItem[];
-  editItem: (item: TCheckListItem) => void;
-  checkItem: (item: TCheckListItem) => void;
+  updateItem: (item: TCheckListItem) => void;
 };
 
-export function CheckList({ items, editItem, checkItem }: CheckListProps) {
+export function CheckList({ items, updateItem }: CheckListProps) {
   return (
     <ItemGroup>
-      {items.map((item, i) => (
-        <Fragment key={item.id}>
-          {i !== 0 && <ItemSeparator />}
-          <CheckListItem
-            item={item}
-            editItem={editItem}
-            checkItem={checkItem}
-          />
-        </Fragment>
-      ))}
+      {items
+        .filter((item) => !item.removedAt)
+        .map((item, i) => (
+          <Fragment key={item.id}>
+            {i !== 0 && <ItemSeparator />}
+            <CheckListItem item={item} updateItem={updateItem} />
+          </Fragment>
+        ))}
     </ItemGroup>
   );
 }
 
 type CheckListItemProps = {
   item: TCheckListItem;
-  editItem: (item: TCheckListItem) => void;
-  checkItem: (item: TCheckListItem) => void;
+  updateItem: (item: TCheckListItem) => void;
 };
 
-function CheckListItem({ item, editItem, checkItem }: CheckListItemProps) {
+function CheckListItem({ item, updateItem }: CheckListItemProps) {
   function onChangeCheck() {
     const now = new Date().toISOString();
-    checkItem({ ...item, updatedAt: now, checked: !item.checked });
+    updateItem({ ...item, updatedAt: now, checked: !item.checked });
   }
 
   return (
@@ -63,7 +59,7 @@ function CheckListItem({ item, editItem, checkItem }: CheckListItemProps) {
         <ItemTitle>{item.name}</ItemTitle>
       </ItemContent>
       <ItemActions>
-        <PopoverMenu item={item} editItem={editItem} />
+        <PopoverMenu item={item} updateItem={updateItem} />
       </ItemActions>
     </Item>
   );
@@ -71,10 +67,15 @@ function CheckListItem({ item, editItem, checkItem }: CheckListItemProps) {
 
 type PopoverMenuProps = {
   item: TCheckListItem;
-  editItem: (item: TCheckListItem) => void;
+  updateItem: (item: TCheckListItem) => void;
 };
 
-function PopoverMenu({ item, editItem }: PopoverMenuProps) {
+function PopoverMenu({ item, updateItem }: PopoverMenuProps) {
+  function onClickDelete() {
+    const now = new Date().toISOString();
+    updateItem({ ...item, updatedAt: now, removedAt: now });
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -83,10 +84,10 @@ function PopoverMenu({ item, editItem }: PopoverMenuProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex flex-col gap-2 max-w-48">
-        <CheckListItemEditDialog item={item} editItem={editItem} />
+        <CheckListItemEditDialog item={item} updateItem={updateItem} />
         <DeleteDialog
           description="The spreadsheet itself will not be deleted."
-          onClick={() => null}
+          onClick={onClickDelete}
         />
       </PopoverContent>
     </Popover>

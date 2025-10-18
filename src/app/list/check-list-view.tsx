@@ -29,18 +29,7 @@ export function CheckListView({ list, addItem, editItem }: CheckListViewProps) {
     ]);
   }
 
-  function editCheckListItem(item: CheckListItem) {
-    editItem([
-      item.id,
-      item.createdAt,
-      item.updatedAt,
-      item.removedAt,
-      item.checked,
-      item.name,
-    ]);
-  }
-
-  function checkCheckListItem(item: CheckListItem) {
+  function updateCheckListItem(item: CheckListItem) {
     editItem([
       item.id,
       item.createdAt,
@@ -56,11 +45,7 @@ export function CheckListView({ list, addItem, editItem }: CheckListViewProps) {
       <div className="flex flex-row-reverse mb-2">
         <CheckListItemAddDialog addItem={addCheckListItem} />
       </div>
-      <CheckList
-        items={items}
-        editItem={editCheckListItem}
-        checkItem={checkCheckListItem}
-      />
+      <CheckList items={items} updateItem={updateCheckListItem} />
     </div>
   );
 }
