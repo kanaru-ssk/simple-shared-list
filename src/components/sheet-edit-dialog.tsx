@@ -123,7 +123,7 @@ export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
                 size="sm"
               >
                 <Edit2Icon />
-                Edit
+                Save
               </Button>
             </div>
           </form>
