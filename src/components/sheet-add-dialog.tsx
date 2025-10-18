@@ -25,7 +25,6 @@ import { Input } from "@/components/ui/input";
 import type { Sheet } from "@/type/sheet";
 
 const formSchema = z.object({
-  name: z.string().min(1, "required"),
   spreadsheetId: z.string().min(1, "required"),
   sheetName: z.string().min(1, "required"),
 });
@@ -39,18 +38,13 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
       spreadsheetId: "",
       sheetName: "",
     },
   });
 
-  function onSubmit({
-    name,
-    spreadsheetId,
-    sheetName,
-  }: z.infer<typeof formSchema>) {
-    addSheet({ name, spreadsheetId, sheetName });
+  function onSubmit({ spreadsheetId, sheetName }: z.infer<typeof formSchema>) {
+    addSheet({ spreadsheetId, sheetName });
     form.reset();
     setOpen(false);
   }
@@ -73,19 +67,6 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ToDo List" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="spreadsheetId"

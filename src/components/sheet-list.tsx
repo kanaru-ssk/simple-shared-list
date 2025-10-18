@@ -43,7 +43,7 @@ export function SheetList({ sheets, editSheet, deleteSheet }: SheetListProps) {
                     href={`/list?spreadsheetId=${sheet.spreadsheetId}&sheetName=${sheet.sheetName}`}
                     className="hover:bg-neutral-100"
                   >
-                    {sheet.name}
+                    {sheet.sheetName}
                   </Link>
                 </Button>
               </ItemTitle>

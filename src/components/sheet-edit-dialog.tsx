@@ -24,7 +24,6 @@ import { Input } from "@/components/ui/input";
 import type { Sheet } from "@/type/sheet";
 
 const formSchema = z.object({
-  name: z.string().min(1, "required"),
   spreadsheetId: z.string().min(1, "required"),
   sheetName: z.string().min(1, "required"),
 });
@@ -39,19 +38,14 @@ export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: sheet.name,
       spreadsheetId: sheet.spreadsheetId,
       sheetName: sheet.sheetName,
     },
   });
 
-  function onSubmit({
-    name,
-    spreadsheetId,
-    sheetName,
-  }: z.infer<typeof formSchema>) {
-    editSheet({ id: sheet.id, name, spreadsheetId, sheetName });
-    form.reset({ name, spreadsheetId, sheetName });
+  function onSubmit({ spreadsheetId, sheetName }: z.infer<typeof formSchema>) {
+    editSheet({ id: sheet.id, spreadsheetId, sheetName });
+    form.reset({ spreadsheetId, sheetName });
     setOpen(false);
   }
 
@@ -69,19 +63,6 @@ export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ToDo List" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="spreadsheetId"

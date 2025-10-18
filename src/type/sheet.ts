@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const sheetSchema = z.object({
   id: z.string(),
-  name: z.string(),
   spreadsheetId: z.string(),
   sheetName: z.string(),
 });
