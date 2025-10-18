@@ -1,7 +1,10 @@
 import { notFound, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
+import { appendValue } from "@/lib/spreadsheet/append-value";
 import { getValues } from "@/lib/spreadsheet/get-values";
+import { updateValue } from "@/lib/spreadsheet/update-value";
+import type { CellValue } from "@/type/cell-value";
 import { type Sheet, sheetsSchema } from "@/type/sheet";
 import { useAuth } from "../auth-provider";
 
@@ -10,8 +13,7 @@ export function useList() {
   const searchParams = useSearchParams();
   const spreadsheetId = searchParams.get("spreadsheetId");
   const sheetName = searchParams.get("sheetName");
-
-  const [list, setList] = useState<string[][]>();
+  const [list, setList] = useState<CellValue[][]>();
   const [sheet, setSheet] = useState<Sheet>();
 
   const loadSheet = useCallback(() => {
@@ -29,7 +31,7 @@ export function useList() {
   }, [spreadsheetId, sheetName]);
 
   const getList = useCallback(async () => {
-    if (!sheet || !auth) return;
+    if (!auth || !sheet) return;
 
     const result = await getValues(
       auth.accessToken,
@@ -43,6 +45,40 @@ export function useList() {
     setList(result.data);
   }, [auth, sheet]);
 
+  async function addItem(item: CellValue[]) {
+    if (!auth || !sheet || list === undefined) return;
+
+    const id = crypto.randomUUID();
+    const newItem = [id, ...item];
+    setList([...list, newItem]);
+    await appendValue(
+      [newItem],
+      auth.accessToken,
+      sheet.spreadsheetId,
+      sheet.sheetName,
+    );
+  }
+
+  function editItem(item: CellValue[]) {
+    if (!auth || !sheet || list === undefined) return;
+
+    const targetIndex = list.findIndex((v) => v[0] === item[0]);
+    if (targetIndex === -1) return;
+
+    const newValue = list.map((v) => (v[0] === item[0] ? item : v));
+    setList(newValue);
+    updateValue(
+      [item],
+      {
+        from: { row: targetIndex + 1, col: 1 },
+        to: { row: targetIndex + 1, col: item.length },
+      },
+      auth.accessToken,
+      sheet.spreadsheetId,
+      sheet.sheetName,
+    );
+  }
+
   useEffect(() => {
     loadSheet();
   }, [loadSheet]);
@@ -51,5 +87,5 @@ export function useList() {
     getList();
   }, [getList]);
 
-  return { list };
+  return { list, addItem, editItem };
 }
