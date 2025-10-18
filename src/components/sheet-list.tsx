@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { Sheet } from "@/type/sheet";
-import { SheetDeleteDialog } from "./sheet-delete-dialog";
+import { DeleteDialog } from "./delete-dialog";
 import { SheetEditDialog } from "./sheet-edit-dialog";
 
 type SheetListProps = {
@@ -98,7 +98,10 @@ function PopoverMenu({ sheet, editSheet, deleteSheet }: PopoverMenuProps) {
           </a>
         </Button>
         <SheetEditDialog sheet={sheet} editSheet={editSheet} />
-        <SheetDeleteDialog onClick={() => deleteSheet(sheet.id)} />
+        <DeleteDialog
+          description="The spreadsheet itself will not be deleted."
+          onClick={() => deleteSheet(sheet.id)}
+        />
       </PopoverContent>
     </Popover>
   );

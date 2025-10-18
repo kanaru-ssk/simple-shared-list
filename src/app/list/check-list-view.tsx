@@ -16,6 +16,14 @@ export function CheckListView({ list, addItem, editItem }: CheckListViewProps) {
     checked: v[1].toString().toLocaleLowerCase() === "true",
   }));
 
+  function addCheckListItemHandler(item: Omit<CheckListItem, "id">) {
+    addItem([item.checked, item.name]);
+  }
+
+  function editCheckListItemHandler(item: CheckListItem) {
+    editItem([item.id, item.checked, item.name]);
+  }
+
   function checkHandler(item: CheckListItem) {
     editItem([item.id, !item.checked, item.name]);
   }
@@ -23,9 +31,13 @@ export function CheckListView({ list, addItem, editItem }: CheckListViewProps) {
   return (
     <div>
       <div className="flex flex-row-reverse mb-2">
-        <CheckListItemAddDialog addItem={addItem} />
+        <CheckListItemAddDialog addItem={addCheckListItemHandler} />
       </div>
-      <CheckList items={items} onChangeCheck={checkHandler} />
+      <CheckList
+        items={items}
+        editItem={editCheckListItemHandler}
+        onChangeCheck={checkHandler}
+      />
     </div>
   );
 }

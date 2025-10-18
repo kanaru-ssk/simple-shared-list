@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
+import { Edit2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,43 +21,48 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import type { CheckListItem } from "@/type/check-list";
+import { Checkbox } from "./ui/checkbox";
 
 const formSchema = z.object({
   name: z.string().min(1, "required"),
+  checked: z.boolean(),
 });
 
-type CheckListItemAddDialogProps = {
-  addItem: (item: Omit<CheckListItem, "id">) => void;
+type CheckListItemEditDialogProps = {
+  item: CheckListItem;
+  editItem: (item: CheckListItem) => void;
 };
 
-export function CheckListItemAddDialog({
-  addItem,
-}: CheckListItemAddDialogProps) {
+export function CheckListItemEditDialog({
+  item,
+  editItem,
+}: CheckListItemEditDialogProps) {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: item.name,
+      checked: item.checked,
     },
   });
 
-  function onSubmit({ name }: z.infer<typeof formSchema>) {
-    addItem({ name, checked: false });
-    form.reset();
+  function onSubmit({ name, checked }: z.infer<typeof formSchema>) {
+    editItem({ id: item.id, name, checked });
+    form.reset({ name, checked });
     setOpen(false);
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
-          <PlusIcon />
-          Add New Item
+        <Button variant="outline" size="sm">
+          <Edit2Icon />
+          Edit
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Item</DialogTitle>
+          <DialogTitle>Edit Item</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -74,10 +79,26 @@ export function CheckListItemAddDialog({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="checked"
+              render={({ field }) => (
+                <FormItem className="flex">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel>done</FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="text-right">
               <Button type="submit">
-                <PlusIcon />
-                Add
+                <Edit2Icon />
+                Save
               </Button>
             </div>
           </form>
