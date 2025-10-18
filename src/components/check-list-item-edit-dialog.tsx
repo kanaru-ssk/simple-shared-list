@@ -47,7 +47,15 @@ export function CheckListItemEditDialog({
   });
 
   function onSubmit({ name, checked }: z.infer<typeof formSchema>) {
-    editItem({ id: item.id, name, checked });
+    const now = new Date().toISOString();
+    editItem({
+      id: item.id,
+      createdAt: item.createdAt,
+      updatedAt: now,
+      removedAt: "",
+      name,
+      checked,
+    });
     form.reset({ name, checked });
     setOpen(false);
   }

@@ -22,10 +22,10 @@ import { Checkbox } from "./ui/checkbox";
 type CheckListProps = {
   items: TCheckListItem[];
   editItem: (item: TCheckListItem) => void;
-  onChangeCheck: (item: TCheckListItem) => void;
+  checkItem: (item: TCheckListItem) => void;
 };
 
-export function CheckList({ items, editItem, onChangeCheck }: CheckListProps) {
+export function CheckList({ items, editItem, checkItem }: CheckListProps) {
   return (
     <ItemGroup>
       {items.map((item, i) => (
@@ -34,7 +34,7 @@ export function CheckList({ items, editItem, onChangeCheck }: CheckListProps) {
           <CheckListItem
             item={item}
             editItem={editItem}
-            onChangeCheck={onChangeCheck}
+            checkItem={checkItem}
           />
         </Fragment>
       ))}
@@ -45,14 +45,19 @@ export function CheckList({ items, editItem, onChangeCheck }: CheckListProps) {
 type CheckListItemProps = {
   item: TCheckListItem;
   editItem: (item: TCheckListItem) => void;
-  onChangeCheck: (item: TCheckListItem) => void;
+  checkItem: (item: TCheckListItem) => void;
 };
 
-function CheckListItem({ item, editItem, onChangeCheck }: CheckListItemProps) {
+function CheckListItem({ item, editItem, checkItem }: CheckListItemProps) {
+  function onChangeCheck() {
+    const now = new Date().toISOString();
+    checkItem({ ...item, updatedAt: now, checked: !item.checked });
+  }
+
   return (
     <Item>
       <ItemActions>
-        <Checkbox checked={item.checked} onClick={() => onChangeCheck(item)} />
+        <Checkbox checked={item.checked} onClick={onChangeCheck} />
       </ItemActions>
       <ItemContent>
         <ItemTitle>{item.name}</ItemTitle>

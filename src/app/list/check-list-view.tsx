@@ -12,31 +12,54 @@ type CheckListViewProps = {
 export function CheckListView({ list, addItem, editItem }: CheckListViewProps) {
   const items = list.slice(1).map((v) => ({
     id: v[0].toString(),
-    name: v[2].toString(),
-    checked: v[1].toString().toLocaleLowerCase() === "true",
+    createdAt: v[1].toString(),
+    updatedAt: v[2].toString(),
+    removedAt: v[3].toString(),
+    checked: v[4].toString().toLocaleLowerCase() === "true",
+    name: v[5].toString(),
   }));
 
-  function addCheckListItemHandler(item: Omit<CheckListItem, "id">) {
-    addItem([item.checked, item.name]);
+  function addCheckListItem(item: Omit<CheckListItem, "id">) {
+    addItem([
+      item.createdAt,
+      item.updatedAt,
+      item.removedAt,
+      item.checked,
+      item.name,
+    ]);
   }
 
-  function editCheckListItemHandler(item: CheckListItem) {
-    editItem([item.id, item.checked, item.name]);
+  function editCheckListItem(item: CheckListItem) {
+    editItem([
+      item.id,
+      item.createdAt,
+      item.updatedAt,
+      item.removedAt,
+      item.checked,
+      item.name,
+    ]);
   }
 
-  function checkHandler(item: CheckListItem) {
-    editItem([item.id, !item.checked, item.name]);
+  function checkCheckListItem(item: CheckListItem) {
+    editItem([
+      item.id,
+      item.createdAt,
+      item.updatedAt,
+      item.removedAt,
+      item.checked,
+      item.name,
+    ]);
   }
 
   return (
     <div>
       <div className="flex flex-row-reverse mb-2">
-        <CheckListItemAddDialog addItem={addCheckListItemHandler} />
+        <CheckListItemAddDialog addItem={addCheckListItem} />
       </div>
       <CheckList
         items={items}
-        editItem={editCheckListItemHandler}
-        onChangeCheck={checkHandler}
+        editItem={editCheckListItem}
+        checkItem={checkCheckListItem}
       />
     </div>
   );

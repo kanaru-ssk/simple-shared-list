@@ -42,7 +42,14 @@ export function CheckListItemAddDialog({
   });
 
   function onSubmit({ name }: z.infer<typeof formSchema>) {
-    addItem({ name, checked: false });
+    const now = new Date().toISOString();
+    addItem({
+      createdAt: now,
+      updatedAt: now,
+      removedAt: "",
+      checked: false,
+      name,
+    });
     form.reset();
     setOpen(false);
   }
