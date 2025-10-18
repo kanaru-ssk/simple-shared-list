@@ -55,7 +55,7 @@ export function CheckListItemAddDialog({
           Add New Item
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Add New Item</DialogTitle>
         </DialogHeader>

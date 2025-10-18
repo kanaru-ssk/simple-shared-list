@@ -60,7 +60,7 @@ export function CheckListItemEditDialog({
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Edit Item</DialogTitle>
         </DialogHeader>
