@@ -90,7 +90,7 @@ export function CheckListItemEditDialog({
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormLabel>done</FormLabel>
+                  <FormLabel>Checked</FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
