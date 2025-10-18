@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import "./globals.css";
-import { AppHeader } from "@/components/app-header";
 import { AuthProvider } from "./auth-provider";
+import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,10 +22,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable}`}>
-        <AuthProvider>
-          <AppHeader />
-          <div className="max-w-3xl mx-auto p-5">{children}</div>
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
         <Toaster />
       </body>
     </html>
