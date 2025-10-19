@@ -11,14 +11,20 @@ type CheckListViewProps = {
 };
 
 export function CheckListView({ list, addItem, editItem }: CheckListViewProps) {
-  const items = list.slice(1).map((v) => ({
-    id: v[0].toString(),
-    createdAt: v[1].toString(),
-    updatedAt: v[2].toString(),
-    removedAt: v[3].toString(),
-    checked: v[4].toString().toLocaleLowerCase() === "true",
-    name: v[5].toString(),
-  }));
+  const items = list
+    .slice(1)
+    .map((v) => ({
+      id: v[0].toString(),
+      createdAt: v[1].toString(),
+      updatedAt: v[2].toString(),
+      removedAt: v[3].toString(),
+      checked: v[4].toString().toLocaleLowerCase() === "true",
+      name: v[5].toString(),
+    }))
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    );
 
   const uncheckedItems = items.filter((item) => !item.checked);
   const checkedItems = items.filter((item) => item.checked);
