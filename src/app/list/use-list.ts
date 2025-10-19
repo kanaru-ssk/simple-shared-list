@@ -14,6 +14,7 @@ export function useList(
 ) {
   const { auth } = useAuth();
   const [list, setList] = useState<CellValue[][]>();
+  const [listHeader, setListHeader] = useState<string[]>([]);
   const [sheet, setSheet] = useState<Sheet>();
 
   // SearchParamsのspreadsheetId,sheetNameからsheetを取得
@@ -43,7 +44,8 @@ export function useList(
       return notFound();
     }
 
-    setList(result.data);
+    setListHeader(result.data[0]);
+    setList(result.data.slice(1));
   }, [auth, sheet]);
 
   async function addItem(item: CellValue[]) {
@@ -71,8 +73,8 @@ export function useList(
     updateValue(
       [item],
       {
-        from: { row: targetIndex + 1, col: 1 },
-        to: { row: targetIndex + 1, col: item.length },
+        from: { row: targetIndex + 2, col: 1 },
+        to: { row: targetIndex + 2, col: item.length },
       },
       auth.accessToken,
       sheet.spreadsheetId,
@@ -88,5 +90,5 @@ export function useList(
     getList();
   }, [getList]);
 
-  return { list, addItem, editItem };
+  return { list, listHeader, addItem, editItem };
 }

@@ -12,7 +12,6 @@ type CheckListViewProps = {
 
 export function CheckListView({ list, addItem, editItem }: CheckListViewProps) {
   const items = list
-    .slice(1)
     .map((v) => ({
       id: v[0].toString(),
       createdAt: v[1].toString(),
