@@ -11,8 +11,9 @@ import { useList } from "./use-list";
 export function View() {
   const { auth, login, logout } = useAuth();
   const searchParams = useSearchParams();
+  const spreadsheetId = searchParams.get("spreadsheetId");
   const sheetName = searchParams.get("sheetName");
-  const { list, addItem, editItem } = useList();
+  const { list, addItem, editItem } = useList(spreadsheetId, sheetName);
 
   return (
     <div>

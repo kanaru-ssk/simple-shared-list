@@ -1,4 +1,4 @@
-import { notFound, useSearchParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { appendValue } from "@/lib/spreadsheet/append-value";
@@ -8,14 +8,15 @@ import type { CellValue } from "@/type/cell-value";
 import { type Sheet, sheetsSchema } from "@/type/sheet";
 import { useAuth } from "../auth-provider";
 
-export function useList() {
+export function useList(
+  spreadsheetId: string | null,
+  sheetName: string | null,
+) {
   const { auth } = useAuth();
-  const searchParams = useSearchParams();
-  const spreadsheetId = searchParams.get("spreadsheetId");
-  const sheetName = searchParams.get("sheetName");
   const [list, setList] = useState<CellValue[][]>();
   const [sheet, setSheet] = useState<Sheet>();
 
+  // SearchParamsのspreadsheetId,sheetNameからsheetを取得
   const loadSheet = useCallback(() => {
     const row = localStorage.getItem(LOCALSTORAGE_KEY.SHEETS);
     if (!row) return;
