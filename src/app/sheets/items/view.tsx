@@ -31,7 +31,7 @@ export function View() {
     <div>
       <header className="px-5 h-16 flex justify-between items-center">
         <div className="flex gap-2 w-full min-w-0">
-          <Link href="/">
+          <Link href="/sheets/">
             <ChevronLeft />
           </Link>
           <span className="font-bold truncate">{sheetName}</span>

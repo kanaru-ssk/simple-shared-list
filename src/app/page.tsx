@@ -1,5 +1,3 @@
-import { DynamicView } from "./dynamic-view";
-
 export default async function Page() {
-  return <DynamicView />;
+  return <div>top</div>;
 }

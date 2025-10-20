@@ -41,7 +41,7 @@ export function SheetList({ sheets, editSheet, deleteSheet }: SheetListProps) {
               <ItemTitle>
                 <Button variant="link" asChild>
                   <Link
-                    href={`/list?spreadsheetId=${sheet.spreadsheetId}&sheetName=${sheet.sheetName}`}
+                    href={`/sheets/items/?spreadsheetId=${sheet.spreadsheetId}&sheetName=${sheet.sheetName}`}
                     className="hover:bg-neutral-100"
                   >
                     {sheet.sheetName}
@@ -72,7 +72,7 @@ type PopoverMenuProps = {
 
 function PopoverMenu({ sheet, editSheet, deleteSheet }: PopoverMenuProps) {
   async function copySharedLink() {
-    const sharedLink = `${env.NEXT_PUBLIC_BASE_URL}/list?spreadsheetId=${sheet.spreadsheetId}&sheetName=${sheet.sheetName}`;
+    const sharedLink = `${env.NEXT_PUBLIC_BASE_URL}/sheets/items/?spreadsheetId=${sheet.spreadsheetId}&sheetName=${sheet.sheetName}`;
     await navigator.clipboard.writeText(sharedLink);
     toast.success("Link copied", { position: "top-center" });
   }
