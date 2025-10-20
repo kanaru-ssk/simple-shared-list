@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LIST_HEADER } from "@/constants/list-header";
+import { useAuth } from "@/hooks/use-auth";
+import { useList } from "@/hooks/use-list";
 import type { CellValue } from "@/type/cell-value";
-import { useAuth } from "../auth-provider";
 import { CheckListView } from "./check-list-view";
-import { useList } from "./use-list";
 
 export function View() {
   const { auth, login, logout } = useAuth();

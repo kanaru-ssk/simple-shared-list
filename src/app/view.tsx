@@ -4,8 +4,8 @@ import Link from "next/link";
 import { SheetAddDialog } from "@/components/sheet-add-dialog";
 import { SheetList } from "@/components/sheet-list";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "./auth-provider";
-import { useSheet } from "./use-sheet";
+import { useAuth } from "@/hooks/use-auth";
+import { useSheet } from "@/hooks/use-sheet";
 
 export function View() {
   const { sheets, addSheet, editSheet, deleteSheet } = useSheet();
