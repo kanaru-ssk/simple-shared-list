@@ -29,7 +29,7 @@ export function View() {
       </header>
 
       <main className="max-w-3xl mx-auto p-5">
-        <div className="flex flex-row-reverse mb-2">
+        <div className="flex flex-row-reverse my-2">
           <SheetAddDialog addSheet={addSheet} />
         </div>
         <SheetList
