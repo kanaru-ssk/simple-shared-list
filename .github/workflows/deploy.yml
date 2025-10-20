@@ -45,6 +45,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
           NEXT_PUBLIC_GSI_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GSI_CLIENT_ID }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
