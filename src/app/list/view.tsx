@@ -2,9 +2,10 @@
 
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import { HeaderMenu } from "@/components/header-menu";
 import { Button } from "@/components/ui/button";
+import { HTTP_STATUS } from "@/constants/http-status";
 import { LIST_HEADER } from "@/constants/list-header";
 import { useAuth } from "@/hooks/use-auth";
 import { useList } from "@/hooks/use-list";
@@ -16,10 +17,17 @@ export function View() {
   const searchParams = useSearchParams();
   const spreadsheetId = searchParams.get("spreadsheetId");
   const sheetName = searchParams.get("sheetName");
-  const { list, listHeader, addItem, editItem } = useList(
+  const { list, listHeader, status, addItem, editItem } = useList(
     spreadsheetId,
     sheetName,
   );
+
+  if (status === HTTP_STATUS.NOT_FOUND) {
+    return notFound();
+  } else if (status === HTTP_STATUS.UNAUTHORIZED) {
+    logout();
+    return null;
+  }
 
   return (
     <div>
@@ -35,7 +43,14 @@ export function View() {
       </header>
 
       <main className="max-w-3xl mx-auto p-5">
-        {!auth && (
+        {auth ? (
+          <ViewSwitcher
+            list={list}
+            listHeader={listHeader}
+            addItem={addItem}
+            editItem={editItem}
+          />
+        ) : (
           <div className="text-center space-y-6">
             <p className="text-neutral-600">
               Please log in with the Google account that has access permissions
@@ -43,15 +58,6 @@ export function View() {
             </p>
             <Button onClick={login}>Login with Google</Button>
           </div>
-        )}
-
-        {list.length !== 0 && (
-          <ViewSwitcher
-            list={list}
-            listHeader={listHeader}
-            addItem={addItem}
-            editItem={editItem}
-          />
         )}
       </main>
     </div>
@@ -72,12 +78,21 @@ function ViewSwitcher({
   addItem,
   editItem,
 }: ViewSwitcherProps) {
-  switch (JSON.stringify(listHeader)) {
-    case JSON.stringify(LIST_HEADER.CHECK_LIST):
+  switch (getViewType(listHeader)) {
+    case "check_list":
       return (
         <CheckListView list={list} addItem={addItem} editItem={editItem} />
       );
-    default:
-      throw Error("invalid list header");
   }
+
+  return null;
+}
+
+type ViewType = "check_list" | "unknown";
+
+function getViewType(listHeader: string[]): ViewType {
+  if (LIST_HEADER.CHECK_LIST.every((v, i) => v === listHeader[i]))
+    return "check_list";
+
+  return "unknown";
 }
