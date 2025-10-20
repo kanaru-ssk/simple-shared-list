@@ -2,7 +2,7 @@
 
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { HeaderMenu } from "@/components/header-menu";
 import { Button } from "@/components/ui/button";
 import { HTTP_STATUS } from "@/constants/http-status";
@@ -11,6 +11,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { useList } from "@/hooks/use-list";
 import type { CellValue } from "@/type/cell-value";
 import { CheckListView } from "./check-list-view";
+import { InvalidListHeaderView } from "./invalid-list-header-view";
+import { PermissionErrorView } from "./permission-error-view";
+import { WrongSheetNameView } from "./wrong-sheet-name-view";
+import { WrongSpreadsheetIdView } from "./wrong-spreadsheet-id-view";
 
 export function View() {
   const { auth, login, logout } = useAuth();
@@ -21,13 +25,6 @@ export function View() {
     spreadsheetId,
     sheetName,
   );
-
-  if (status === HTTP_STATUS.NOT_FOUND) {
-    return notFound();
-  } else if (status === HTTP_STATUS.UNAUTHORIZED) {
-    logout();
-    return null;
-  }
 
   return (
     <div>
@@ -45,10 +42,12 @@ export function View() {
       <main className="max-w-3xl mx-auto p-5">
         {auth ? (
           <ViewSwitcher
+            status={status}
             list={list}
             listHeader={listHeader}
             addItem={addItem}
             editItem={editItem}
+            logout={logout}
           />
         ) : (
           <div className="text-center space-y-6">
@@ -65,19 +64,36 @@ export function View() {
 }
 
 type ViewSwitcherProps = {
+  status: number | undefined;
   list: CellValue[][];
   listHeader: string[];
   addItem: (item: CellValue[]) => Promise<void>;
   editItem: (item: CellValue[]) => void;
+  logout: () => void;
 };
 
 // スプレッドシートのヘッダーの内容によってテンプレートを出し分ける
 function ViewSwitcher({
+  status,
   list,
   listHeader,
   addItem,
   editItem,
+  logout,
 }: ViewSwitcherProps) {
+  if (status === HTTP_STATUS.BAD_REQUEST) {
+    return <WrongSheetNameView />;
+  } else if (status === HTTP_STATUS.UNAUTHORIZED) {
+    logout();
+    return null;
+  } else if (status === HTTP_STATUS.FORBIDDEN) {
+    return <PermissionErrorView />;
+  } else if (status === HTTP_STATUS.NOT_FOUND) {
+    return <WrongSpreadsheetIdView />;
+  } else if (status !== HTTP_STATUS.OK) {
+    throw new Error("unknown error");
+  }
+
   switch (getViewType(listHeader)) {
     case "check_list":
       return (
@@ -85,7 +101,7 @@ function ViewSwitcher({
       );
   }
 
-  return null;
+  return <InvalidListHeaderView />;
 }
 
 type ViewType = "check_list" | "unknown";
