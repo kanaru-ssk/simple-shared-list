@@ -12,6 +12,7 @@ import { useList } from "@/hooks/use-list";
 import type { CellValue } from "@/type/cell-value";
 import { CheckListView } from "./check-list-view";
 import { InvalidListHeaderView } from "./invalid-list-header-view";
+import { ListSkelton } from "./list-skeleton";
 import { PermissionErrorView } from "./permission-error-view";
 import { WrongSheetNameView } from "./wrong-sheet-name-view";
 import { WrongSpreadsheetIdView } from "./wrong-spreadsheet-id-view";
@@ -81,17 +82,22 @@ function ViewSwitcher({
   editItem,
   logout,
 }: ViewSwitcherProps) {
-  if (status === HTTP_STATUS.BAD_REQUEST) {
-    return <WrongSheetNameView />;
-  } else if (status === HTTP_STATUS.UNAUTHORIZED) {
-    logout();
-    return null;
-  } else if (status === HTTP_STATUS.FORBIDDEN) {
-    return <PermissionErrorView />;
-  } else if (status === HTTP_STATUS.NOT_FOUND) {
-    return <WrongSpreadsheetIdView />;
-  } else if (status !== HTTP_STATUS.OK) {
-    throw new Error("unknown error");
+  switch (status) {
+    case undefined:
+      return <ListSkelton />;
+    case HTTP_STATUS.OK:
+      break;
+    case HTTP_STATUS.BAD_REQUEST:
+      return <WrongSheetNameView />;
+    case HTTP_STATUS.UNAUTHORIZED:
+      logout();
+      return null;
+    case HTTP_STATUS.FORBIDDEN:
+      return <PermissionErrorView />;
+    case HTTP_STATUS.NOT_FOUND:
+      return <WrongSpreadsheetIdView />;
+    default:
+      throw new Error("unknown error");
   }
 
   switch (getViewType(listHeader)) {
