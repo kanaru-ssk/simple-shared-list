@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from "@/hooks/use-auth";
+import { DynamicAuthProvider } from "./dynamic-auth-provider";
 import "./globals.css";
 
 const inter = Inter({
@@ -22,7 +22,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable}`}>
-        <AuthProvider>{children}</AuthProvider>
+        <DynamicAuthProvider>{children}</DynamicAuthProvider>
         <Toaster />
       </body>
     </html>

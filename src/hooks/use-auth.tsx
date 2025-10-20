@@ -6,9 +6,7 @@ import Script from "next/script";
 import {
   createContext,
   type ReactNode,
-  useCallback,
   useContext,
-  useEffect,
   useRef,
   useState,
 } from "react";
@@ -41,7 +39,25 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [auth, setAuth] = useState<Auth | null>(null);
+  const [auth, setAuth] = useState<Auth | null>(() => {
+    const row = localStorage.getItem(LOCALSTORAGE_KEY.AUTH);
+    if (!row) return null;
+
+    const parsed = authSchema.safeParse(JSON.parse(row));
+    if (!parsed.success) {
+      localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
+      return null;
+    }
+
+    // 期限切れの場合はトークン再取得
+    if (parsed.data.expiresAt < Date.now()) {
+      localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
+      return null;
+    }
+
+    return parsed.data;
+  });
+
   const tokenClientRef = useRef<TokenClient>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -68,25 +84,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setAuth(newAuth);
     localStorage.setItem(LOCALSTORAGE_KEY.AUTH, JSON.stringify(newAuth));
   }
-
-  const loadAuth = useCallback(() => {
-    const row = localStorage.getItem(LOCALSTORAGE_KEY.AUTH);
-    if (!row) return;
-
-    const result = authSchema.safeParse(JSON.parse(row));
-    if (!result.success) return localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
-
-    // 期限切れの場合はトークン再取得
-    if (result.data.expiresAt < Date.now()) {
-      return localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
-    }
-
-    setAuth(result.data);
-  }, []);
-
-  useEffect(() => {
-    loadAuth();
-  }, [loadAuth]);
 
   function gsiInitialize() {
     tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
