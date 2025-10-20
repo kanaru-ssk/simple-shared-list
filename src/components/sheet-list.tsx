@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { env } from "@/env";
 import type { Sheet } from "@/type/sheet";
 import { DeleteDialog } from "./delete-dialog";
 import { SheetEditDialog } from "./sheet-edit-dialog";
@@ -71,7 +72,8 @@ type PopoverMenuProps = {
 
 function PopoverMenu({ sheet, editSheet, deleteSheet }: PopoverMenuProps) {
   async function copySharedLink() {
-    await navigator.clipboard.writeText("TODO: 共有リンクをコピー");
+    const sharedLink = `${env.NEXT_PUBLIC_BASE_URL}/list?spreadsheetId=${sheet.spreadsheetId}&sheetName=${sheet.sheetName}`;
+    await navigator.clipboard.writeText(sharedLink);
     toast.success("Link copied", { position: "top-center" });
   }
 
