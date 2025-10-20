@@ -7,11 +7,14 @@ export const sheetSchema = z.object({
 });
 export const sheetsSchema = z.array(sheetSchema);
 
-// スプレッドシートの共有リンクをIDに変換
+// スプレッドシートのURLをIDに変換
 // https://docs.google.com/spreadsheets/d/xxx/edit?gid=0#gid=0 => xxx
-export const sharedLinkToId = z.preprocess(
+export const urlToId = z.preprocess(
   (value: string) => String(value).match(/\/d\/([^/]+)/)?.[1],
   z.string().min(1),
 );
+export function idToUrl(id: string) {
+  return `https://docs.google.com/spreadsheets/d/${id}`;
+}
 
 export type Sheet = z.infer<typeof sheetSchema>;

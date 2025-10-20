@@ -20,10 +20,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Sheet } from "@/type/sheet";
+import { idToUrl, type Sheet, urlToId } from "@/type/sheet";
 
 const formSchema = z.object({
-  spreadsheetId: z.string().min(1, "required"),
+  spreadsheetId: urlToId,
   sheetName: z.string().min(1, "required"),
 });
 
@@ -37,14 +37,14 @@ export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      spreadsheetId: sheet.spreadsheetId,
+      spreadsheetId: idToUrl(sheet.spreadsheetId),
       sheetName: sheet.sheetName,
     },
   });
 
   function onSubmit({ spreadsheetId, sheetName }: z.infer<typeof formSchema>) {
     editSheet({ id: sheet.id, spreadsheetId, sheetName });
-    form.reset({ spreadsheetId, sheetName });
+    form.reset({ spreadsheetId: idToUrl(spreadsheetId), sheetName });
     setOpen(false);
   }
 
@@ -69,10 +69,7 @@ export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
                 <FormItem>
                   <FormLabel>Spreadsheet Link</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="https://docs.google.com/spreadsheets/d/xxx/edit?gid=0#gid=0"
-                      {...field}
-                    />
+                    <Input placeholder={idToUrl("xxx")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -21,10 +21,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { type Sheet, sharedLinkToId } from "@/type/sheet";
+import { idToUrl, type Sheet, urlToId } from "@/type/sheet";
 
 const formSchema = z.object({
-  spreadsheetId: sharedLinkToId,
+  spreadsheetId: urlToId,
   sheetName: z.string().min(1, "required"),
 });
 
@@ -73,10 +73,7 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
                 <FormItem>
                   <FormLabel>Spreadsheet Link</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="https://docs.google.com/spreadsheets/d/xxx/edit?gid=0#gid=0"
-                      {...field}
-                    />
+                    <Input placeholder={idToUrl("xxx")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { env } from "@/env";
-import type { Sheet } from "@/type/sheet";
+import { idToUrl, type Sheet } from "@/type/sheet";
 import { DeleteDialog } from "./delete-dialog";
 import { SheetEditDialog } from "./sheet-edit-dialog";
 
@@ -91,7 +91,7 @@ function PopoverMenu({ sheet, editSheet, deleteSheet }: PopoverMenuProps) {
         </Button>
         <Button variant="outline" asChild>
           <a
-            href={`https://docs.google.com/spreadsheets/d/${sheet.spreadsheetId}`}
+            href={idToUrl(sheet.spreadsheetId)}
             target="_blank"
             rel="noreferrer"
           >
