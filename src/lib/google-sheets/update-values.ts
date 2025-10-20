@@ -1,4 +1,4 @@
-// see: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/append
+// see: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/update
 
 import type { HTTP_METHOD } from "next/dist/server/web/http";
 import { HTTP_STATUS } from "@/constants/http-status";
@@ -6,15 +6,19 @@ import type { CellValue } from "@/type/cell-value";
 import type { Result } from "@/type/result";
 import { errorSchema } from "./error-schema";
 
-export async function appendValue(
+export async function updateValues(
   values: CellValue[][],
+  target: {
+    from: { row: number; col: number };
+    to: { row: number; col: number };
+  },
   accessToken: string,
   spreadsheetId: string,
   sheetTitle: string,
 ): Promise<Result<undefined>> {
-  const range = sheetTitle;
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=USER_ENTERED`;
-  const method: HTTP_METHOD = "POST";
+  const range = `${sheetTitle}!R${target.from.row}C${target.from.col}:R${target.to.row}C${target.to.col}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?valueInputOption=USER_ENTERED`;
+  const method: HTTP_METHOD = "PUT";
   const headers = { Authorization: `Bearer ${accessToken}` };
   const body = JSON.stringify({ range, values });
   const res = await fetch(url, { method, headers, body });

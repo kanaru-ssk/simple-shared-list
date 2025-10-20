@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { HTTP_STATUS } from "@/constants/http-status";
 import { useAuth } from "@/hooks/use-auth";
 import { useSheet } from "@/hooks/use-sheet";
-import { appendValue, getValues, updateValue } from "@/lib/google-sheets";
+import { appendValues, getValues, updateValues } from "@/lib/google-sheets";
 import type { CellValue } from "@/type/cell-value";
 import type { Sheet } from "@/type/sheet";
 
@@ -60,7 +60,7 @@ export function useList(
     const id = crypto.randomUUID();
     const newItem = [id, ...item];
     setList([...list, newItem]);
-    await appendValue(
+    await appendValues(
       [newItem],
       auth.accessToken,
       sheet.spreadsheetId,
@@ -76,7 +76,7 @@ export function useList(
 
     const newValue = list.map((v) => (v[0] === item[0] ? item : v));
     setList(newValue);
-    updateValue(
+    updateValues(
       [item],
       {
         from: { row: targetIndex + 2, col: 1 },

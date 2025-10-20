@@ -1,4 +1,3 @@
-export { appendValue } from "./append-value";
-export { getSheets } from "./get-sheets";
+export { appendValues } from "./append-values";
 export { getValues } from "./get-values";
-export { updateValue } from "./update-value";
+export { updateValues } from "./update-values";
