@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { HTTP_STATUS } from "@/constants/http-status";
 import { useAuth } from "@/hooks/use-auth";
 import { useSheet } from "@/hooks/use-sheet";
-import { appendValue } from "@/lib/spreadsheet/append-value";
-import { getValues } from "@/lib/spreadsheet/get-values";
-import { updateValue } from "@/lib/spreadsheet/update-value";
+import { appendValue } from "@/lib/google-sheets/append-value";
+import { getValues } from "@/lib/google-sheets/get-values";
+import { updateValue } from "@/lib/google-sheets/update-value";
 import type { CellValue } from "@/type/cell-value";
 import type { Sheet } from "@/type/sheet";
 
