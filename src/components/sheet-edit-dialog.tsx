@@ -56,7 +56,7 @@ export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Edit sheet</DialogTitle>
         </DialogHeader>
