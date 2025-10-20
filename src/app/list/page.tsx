@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { View } from "./view";
+import { DynamicView } from "./dynamic-view";
 
 export default async function Page() {
   return (
     <Suspense>
-      <View />
+      <DynamicView />
     </Suspense>
   );
 }

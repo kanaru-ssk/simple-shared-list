@@ -1,19 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { type Sheet, sheetsSchema } from "@/type/sheet";
 
 export function useSheet() {
-  const [sheets, setSheets] = useState<Sheet[]>([]);
-
-  const loadSheets = useCallback(() => {
+  const [sheets, setSheets] = useState<Sheet[]>(() => {
     const row = localStorage.getItem(LOCALSTORAGE_KEY.SHEETS);
-    if (!row) return;
-
-    const result = sheetsSchema.safeParse(JSON.parse(row));
-    if (!result.success) throw new Error(result.error.message);
-
-    setSheets(result.data);
-  }, []);
+    if (!row) return [];
+    const parsed = sheetsSchema.safeParse(JSON.parse(row));
+    if (!parsed.success) {
+      console.error(parsed.error);
+      return [];
+    }
+    return parsed.data;
+  });
 
   const getSheet = useCallback((spreadsheetId: string, sheetName: string) => {
     const row = localStorage.getItem(LOCALSTORAGE_KEY.SHEETS);
@@ -50,10 +49,6 @@ export function useSheet() {
     setSheets(newValue);
     localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
   }
-
-  useEffect(() => {
-    loadSheets();
-  }, [loadSheets]);
 
   return { sheets, getSheet, addSheet, editSheet, deleteSheet };
 }
