@@ -34,7 +34,7 @@ export function View() {
           <Link href="/sheets/">
             <ChevronLeft />
           </Link>
-          <span className="font-bold truncate">{sheetName}</span>
+          <h1 className="font-bold truncate">{sheetName}</h1>
         </div>
 
         {auth && <HeaderMenu logout={logout} />}

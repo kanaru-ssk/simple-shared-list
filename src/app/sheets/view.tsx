@@ -14,9 +14,11 @@ export function View() {
   return (
     <div>
       <header className="px-5 h-16 flex justify-between items-center">
-        <Link href="/" className="font-bold">
-          Simple Shared List
-        </Link>
+        <h1>
+          <Link href="/" className="font-bold">
+            Simple Shared List
+          </Link>
+        </h1>
         {auth && <HeaderMenu logout={logout} />}
       </header>
 
