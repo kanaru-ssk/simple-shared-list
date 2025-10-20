@@ -13,7 +13,7 @@ export function useList(
   sheetName: string | null,
 ) {
   const { auth } = useAuth();
-  const [list, setList] = useState<CellValue[][]>();
+  const [list, setList] = useState<CellValue[][]>([]);
   const [listHeader, setListHeader] = useState<string[]>([]);
   const [sheet, setSheet] = useState<Sheet>();
   const { getSheet, addSheet } = useSheet();
@@ -34,7 +34,11 @@ export function useList(
   }, [spreadsheetId, sheetName, getSheet, addSheet]);
 
   const getList = useCallback(async () => {
-    if (!auth || !sheet) return;
+    if (!auth || !sheet) {
+      setListHeader([]);
+      setList([]);
+      return;
+    }
 
     const result = await getValues(
       auth.accessToken,
