@@ -9,7 +9,7 @@ export const sheetsSchema = z.array(sheetSchema);
 
 // スプレッドシートの共有リンクをIDに変換
 export const sharedLinkToId = z.preprocess(
-  (value) => String(value).match(/\/d\/([^/]+)/)?.[1],
+  (value: string) => String(value).match(/\/d\/([^/]+)/)?.[1],
   z.string().min(1),
 );
 

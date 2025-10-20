@@ -15,17 +15,16 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Sheet } from "@/type/sheet";
+import { type Sheet, sharedLinkToId } from "@/type/sheet";
 
 const formSchema = z.object({
-  spreadsheetId: z.string().min(1, "required"),
+  spreadsheetId: sharedLinkToId,
   sheetName: z.string().min(1, "required"),
 });
 
@@ -72,17 +71,13 @@ export function SheetAddDialog({ addSheet }: SheetAddDialogProps) {
               name="spreadsheetId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Spreadsheet ID</FormLabel>
+                  <FormLabel>Spreadsheet Link</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      placeholder="https://docs.google.com/spreadsheets/d/xxx/edit?gid=0#gid=0"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>
-                    https://docs.google.com/spreadsheets/d/
-                    <span className="text-neutral-800 font-bold">
-                      [Spreadsheet ID]
-                    </span>
-                    /edit?gid=0#gid=0
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

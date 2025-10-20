@@ -68,17 +68,13 @@ export function SheetEditDialog({ sheet, editSheet }: SheetEditDialogProps) {
               name="spreadsheetId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Spreadsheet ID</FormLabel>
+                  <FormLabel>Spreadsheet Link</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      placeholder="https://docs.google.com/spreadsheets/d/xxx/edit?gid=0#gid=0"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>
-                    https://docs.google.com/spreadsheets/d/
-                    <span className="text-neutral-800 font-bold">
-                      [Spreadsheet ID]
-                    </span>
-                    /edit?gid=0#gid=0
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
