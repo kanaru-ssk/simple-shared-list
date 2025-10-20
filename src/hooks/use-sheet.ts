@@ -28,11 +28,13 @@ export function useSheet() {
   }, []);
 
   const addSheet = useCallback(
-    (sheet: Omit<Sheet, "id">) => {
+    (sheet: Omit<Sheet, "id">): Sheet => {
       const id = crypto.randomUUID();
-      const newValue = [...sheets, { id, ...sheet }];
+      const newSheet = { id, ...sheet };
+      const newValue = [...sheets, newSheet];
       setSheets(newValue);
       localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
+      return newSheet;
     },
     [sheets],
   );

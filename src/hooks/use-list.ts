@@ -27,7 +27,9 @@ export function useList(
     if (targetSheet) {
       setSheet(targetSheet);
     } else {
-      addSheet({ spreadsheetId, sheetName });
+      // sheetsになかった場合(共有リンクからのアクセス)は新規作成
+      const newSheet = addSheet({ spreadsheetId, sheetName });
+      setSheet(newSheet);
     }
   }, [spreadsheetId, sheetName, getSheet, addSheet]);
 
