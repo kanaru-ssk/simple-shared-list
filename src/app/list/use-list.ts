@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { LOCALSTORAGE_KEY } from "@/constants/localstorage";
 import { appendValue } from "@/lib/spreadsheet/append-value";
 import { getValues } from "@/lib/spreadsheet/get-values";
 import { updateValue } from "@/lib/spreadsheet/update-value";
 import type { CellValue } from "@/type/cell-value";
-import { type Sheet, sheetsSchema } from "@/type/sheet";
+import type { Sheet } from "@/type/sheet";
 import { useAuth } from "../auth-provider";
+import { useSheet } from "../use-sheet";
 
 export function useList(
   spreadsheetId: string | null,
@@ -16,21 +16,20 @@ export function useList(
   const [list, setList] = useState<CellValue[][]>();
   const [listHeader, setListHeader] = useState<string[]>([]);
   const [sheet, setSheet] = useState<Sheet>();
+  const { getSheet, addSheet } = useSheet();
 
   // SearchParamsのspreadsheetId,sheetNameからsheetを取得
   const loadSheet = useCallback(() => {
-    const row = localStorage.getItem(LOCALSTORAGE_KEY.SHEETS);
-    if (!row) return;
+    if (!spreadsheetId || !sheetName) return;
 
-    const result = sheetsSchema.safeParse(JSON.parse(row));
-    if (!result.success) throw new Error(result.error.message);
+    const targetSheet = getSheet(spreadsheetId, sheetName);
 
-    setSheet(
-      result.data.find(
-        (v) => v.spreadsheetId === spreadsheetId && v.sheetName === sheetName,
-      ),
-    );
-  }, [spreadsheetId, sheetName]);
+    if (targetSheet) {
+      setSheet(targetSheet);
+    } else {
+      addSheet({ spreadsheetId, sheetName });
+    }
+  }, [spreadsheetId, sheetName, getSheet, addSheet]);
 
   const getList = useCallback(async () => {
     if (!auth || !sheet) return;

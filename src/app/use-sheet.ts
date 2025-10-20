@@ -15,12 +15,27 @@ export function useSheet() {
     setSheets(result.data);
   }, []);
 
-  function addSheet(sheet: Omit<Sheet, "id">) {
-    const id = crypto.randomUUID();
-    const newValue = [...sheets, { id, ...sheet }];
-    setSheets(newValue);
-    localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
-  }
+  const getSheet = useCallback((spreadsheetId: string, sheetName: string) => {
+    const row = localStorage.getItem(LOCALSTORAGE_KEY.SHEETS);
+    if (!row) return;
+
+    const result = sheetsSchema.safeParse(JSON.parse(row));
+    if (!result.success) throw new Error(result.error.message);
+
+    return result.data.find(
+      (v) => v.spreadsheetId === spreadsheetId && v.sheetName === sheetName,
+    );
+  }, []);
+
+  const addSheet = useCallback(
+    (sheet: Omit<Sheet, "id">) => {
+      const id = crypto.randomUUID();
+      const newValue = [...sheets, { id, ...sheet }];
+      setSheets(newValue);
+      localStorage.setItem(LOCALSTORAGE_KEY.SHEETS, JSON.stringify(newValue));
+    },
+    [sheets],
+  );
 
   function editSheet(sheet: Sheet) {
     const newValue = [...sheets.map((v) => (v.id === sheet.id ? sheet : v))];
@@ -38,5 +53,5 @@ export function useSheet() {
     loadSheets();
   }, [loadSheets]);
 
-  return { sheets, addSheet, editSheet, deleteSheet };
+  return { sheets, getSheet, addSheet, editSheet, deleteSheet };
 }
