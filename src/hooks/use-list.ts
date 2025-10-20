@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { HTTP_STATUS } from "@/constants/http-status";
 import { useAuth } from "@/hooks/use-auth";
 import { useSheet } from "@/hooks/use-sheet";
 import { appendValue } from "@/lib/spreadsheet/append-value";
@@ -12,7 +13,7 @@ export function useList(
   spreadsheetId: string | null,
   sheetName: string | null,
 ) {
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
   const [list, setList] = useState<CellValue[][]>([]);
   const [listHeader, setListHeader] = useState<string[]>([]);
   const [sheet, setSheet] = useState<Sheet>();
@@ -46,12 +47,16 @@ export function useList(
       sheet.sheetName,
     );
     if (!result.ok) {
+      // 401エラーが返ってきたらaccessTokenの有効期限切れとしてlogoutする
+      if (result.status === HTTP_STATUS.UNAUTHORIZED) {
+        return logout();
+      }
       return notFound();
     }
 
     setListHeader(result.data[0]);
     setList(result.data.slice(1));
-  }, [auth, sheet]);
+  }, [auth, sheet, logout]);
 
   async function addItem(item: CellValue[]) {
     if (!auth || !sheet || list === undefined) return;
