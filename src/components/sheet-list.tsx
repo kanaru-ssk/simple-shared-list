@@ -36,7 +36,7 @@ export function SheetList({ sheets, editSheet, deleteSheet }: SheetListProps) {
         <Fragment key={sheet.id}>
           {i !== 0 && <ItemSeparator />}
           <Item>
-            <ItemContent>
+            <ItemContent className="truncate">
               <ItemTitle>
                 <Button variant="link" asChild>
                   <Link

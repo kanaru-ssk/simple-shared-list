@@ -1,4 +1,3 @@
-import { TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +21,6 @@ export function LogoutDialog({ logout }: LogoutDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="destructive" size="sm">
-          <TrashIcon />
           Logout
         </Button>
       </DialogTrigger>

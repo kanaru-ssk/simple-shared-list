@@ -1,15 +1,10 @@
 "use client";
 
-import { ChevronLeft, UserRound } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { LogoutDialog } from "@/components/logout-dialog";
+import { HeaderMenu } from "@/components/header-menu";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { LIST_HEADER } from "@/constants/list-header";
 import { useAuth } from "@/hooks/use-auth";
 import { useList } from "@/hooks/use-list";
@@ -29,14 +24,14 @@ export function View() {
   return (
     <div>
       <header className="px-5 h-16 flex justify-between items-center">
-        <div className="flex gap-2 w-full">
+        <div className="flex gap-2 w-full min-w-0">
           <Link href="/">
             <ChevronLeft />
           </Link>
           <span className="font-bold truncate">{sheetName}</span>
         </div>
 
-        {auth && <PopoverMenu logout={logout} />}
+        {auth && <HeaderMenu logout={logout} />}
       </header>
 
       <main className="max-w-3xl mx-auto p-5">
@@ -49,6 +44,7 @@ export function View() {
             <Button onClick={login}>Login with Google</Button>
           </div>
         )}
+
         {list.length !== 0 && (
           <ViewSwitcher
             list={list}
@@ -84,23 +80,4 @@ function ViewSwitcher({
     default:
       throw Error("invalid list header");
   }
-}
-
-type PopoverMenuProps = {
-  logout: () => void;
-};
-
-function PopoverMenu({ logout }: PopoverMenuProps) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-full">
-          <UserRound />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="flex flex-col gap-2 max-w-48">
-        <LogoutDialog logout={logout} />
-      </PopoverContent>
-    </Popover>
-  );
 }
