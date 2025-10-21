@@ -26,6 +26,7 @@ type AuthState = {
   login: () => void;
   logout: () => void;
 };
+
 const AuthContext = createContext<AuthState>({
   auth: null,
   login: () => null,
@@ -75,7 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // 失効の60秒前にトークン再取得
     timerRef.current = setTimeout(
-      () => tokenClientRef.current?.requestAccessToken({ prompt: "" }),
+      () => tokenClientRef.current?.requestAccessToken({ prompt: "none" }),
       expires_in * 1_000 - 60_000,
     );
 
