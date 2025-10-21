@@ -52,7 +52,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // 期限切れの場合はトークン再取得
     if (parsed.data.expiresAt < Date.now()) {
-      localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
+      refreshToken();
       return null;
     }
 
@@ -71,12 +71,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
   }
 
-  function loginCallback({ access_token, expires_in }: AuthResponse) {
+  function refreshToken() {
+    tokenClientRef.current?.requestAccessToken({ prompt: "none" });
+  }
+
+  function loginCallback({ access_token, expires_in }: TokenResponse) {
     if (!tokenClientRef.current) return;
 
     // 失効の60秒前にトークン再取得
     timerRef.current = setTimeout(
-      () => tokenClientRef.current?.requestAccessToken({ prompt: "none" }),
+      () => refreshToken(),
       expires_in * 1_000 - 60_000,
     );
 
@@ -108,12 +112,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 }
 
-const authResponseSchema = z.object({
+const tokenResponseSchema = z.object({
   access_token: z.string(),
   expires_in: z.number(),
 });
 
-type AuthResponse = z.infer<typeof authResponseSchema>;
+type TokenResponse = z.infer<typeof tokenResponseSchema>;
 
 type TokenClient = {
   requestAccessToken: (arg: { prompt?: string }) => void;
@@ -127,7 +131,7 @@ declare global {
           initTokenClient: (arg: {
             client_id: string;
             scope: string;
-            callback: (arg: AuthResponse) => void;
+            callback: (arg: TokenResponse) => void;
             use_fedcm_for_prompt: boolean;
             use_fedcm_for_button: boolean;
           }) => TokenClient;
