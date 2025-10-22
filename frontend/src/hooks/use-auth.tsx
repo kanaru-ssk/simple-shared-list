@@ -54,9 +54,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return null;
     }
 
-    // 期限切れの場合はトークン再取得
+    // 期限切れの場合はログアウト
     if (parsed.data.expiresAt < Date.now()) {
-      refreshToken();
+      localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
       return null;
     }
 
@@ -64,7 +64,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   const tokenClientRef = useRef<TokenClient>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   function login() {
     tokenClientRef.current?.requestAccessToken({ prompt: "" });
@@ -75,18 +74,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem(LOCALSTORAGE_KEY.AUTH);
   }
 
-  function refreshToken() {
-    tokenClientRef.current?.requestAccessToken({ prompt: "none" });
-  }
-
   function loginCallback({ access_token, expires_in }: TokenResponse) {
     if (!tokenClientRef.current) return;
-
-    // 失効の60秒前にトークン再取得
-    timerRef.current = setTimeout(
-      () => refreshToken(),
-      expires_in * 1_000 - 60_000,
-    );
 
     const expiresAt = Date.now() + expires_in * 1000;
     const newAuth = { accessToken: access_token, expiresAt };
