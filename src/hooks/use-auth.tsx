@@ -2,10 +2,6 @@
 
 // see: https://developers.google.com/identity/oauth2/web/reference/js-reference
 
-// アクセストークンの更新をユーザーの操作なしでやりたかったが、
-// ユーザー主導のイベントからしか`requestAccessToken`を呼び出せない。
-// see: https://developers.google.com/identity/oauth2/web/guides/use-token-model#token_expiration
-
 import Script from "next/script";
 import {
   createContext,
