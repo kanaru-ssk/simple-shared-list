@@ -1,3 +1,5 @@
+import { View } from "./view";
+
 export default async function Page() {
-  return <div>top</div>;
+  return <View />;
 }
